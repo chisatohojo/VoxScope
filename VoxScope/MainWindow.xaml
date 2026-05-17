@@ -80,6 +80,24 @@
                     Margin="12,0,0,0"
                     Click="RefreshDevicesButton_Click"
                     Content="再読み込み" />
+
+            <TextBlock Margin="24,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="遅延" />
+            <TextBlock x:Name="LatencyTextBlock"
+                       Width="72"
+                       Margin="8,0,0,0"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold" />
+
+            <TextBlock Margin="20,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="CPU" />
+            <TextBlock x:Name="CpuUsageTextBlock"
+                       Width="72"
+                       Margin="8,0,0,0"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold" />
         </StackPanel>
 
         <Grid Grid.Row="8">
@@ -173,20 +191,35 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="24" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0">
-                <TextBlock FontSize="16"
-                           FontWeight="SemiBold"
-                           Text="基本エフェクト" />
-
-                <Grid Margin="0,16,0,0">
+        <TabControl x:Name="EffectTabControl"
+                    Grid.Row="10">
+            <TabItem Header="声質">
+                <Grid Margin="16">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="16" />
@@ -206,7 +239,6 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Grid.Column="0"
                                VerticalAlignment="Center"
                                Text="Pitch Shift" />
                     <Slider x:Name="PitchShiftSlider"
@@ -230,17 +262,20 @@
                                Text="声の高さを上下に変えます。" />
 
                     <TextBlock Grid.Row="3"
-                               Grid.Column="0"
                                VerticalAlignment="Center"
-                               Text="Output Gain" />
-                    <Slider x:Name="OutputGainSlider"
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Minimum="-24"
-                            Maximum="12"
-                            TickFrequency="1"
-                            ValueChanged="OutputGainSlider_ValueChanged" />
-                    <TextBlock x:Name="OutputGainValueTextBlock"
+                               Text="Pitch Stages" />
+                    <ComboBox x:Name="PitchStageModeComboBox"
+                              Grid.Row="3"
+                              Grid.Column="1"
+                              Height="28"
+                              SelectedIndex="0"
+                              SelectionChanged="PitchStageModeComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Auto" />
+                        <ComboBoxItem Content="1段" />
+                        <ComboBoxItem Content="2段" />
+                        <ComboBoxItem Content="3段" />
+                    </ComboBox>
+                    <TextBlock x:Name="PitchStageCountTextBlock"
                                Grid.Row="3"
                                Grid.Column="2"
                                HorizontalAlignment="Right"
@@ -250,16 +285,20 @@
                                Grid.ColumnSpan="2"
                                Margin="0,4,0,0"
                                Foreground="#4B5563"
-                               Text="最終的な出力音量を調整します。" />
+                               Text="Auto は大きな変更ほど段数を増やします。" />
 
-                    <CheckBox x:Name="NoiseGateCheckBox"
-                              Grid.Row="6"
-                              Grid.ColumnSpan="2"
-                              VerticalAlignment="Center"
-                              Checked="NoiseGateCheckBox_Checked"
-                              Unchecked="NoiseGateCheckBox_Checked"
-                              Content="Noise Gate" />
-                    <TextBlock x:Name="NoiseGateStateTextBlock"
+                    <TextBlock Grid.Row="6"
+                               VerticalAlignment="Center"
+                               Text="Formant Shift" />
+                    <Slider x:Name="FormantShiftSlider"
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Minimum="-6"
+                            Maximum="6"
+                            TickFrequency="1"
+                            IsSnapToTickEnabled="True"
+                            ValueChanged="FormantShiftSlider_ValueChanged" />
+                    <TextBlock x:Name="FormantShiftValueTextBlock"
                                Grid.Row="6"
                                Grid.Column="2"
                                HorizontalAlignment="Right"
@@ -269,21 +308,16 @@
                                Grid.ColumnSpan="2"
                                Margin="0,4,0,0"
                                Foreground="#4B5563"
-                               Text="小さな環境音を抑えます。" />
+                               Text="声色の明るさや太さを寄せます。" />
 
-                    <TextBlock Grid.Row="9"
-                               Grid.Column="0"
-                               VerticalAlignment="Center"
-                               Text="Gate Threshold" />
-                    <Slider x:Name="NoiseGateThresholdSlider"
-                            Grid.Row="9"
-                            Grid.Column="1"
-                            Minimum="-80"
-                            Maximum="-20"
-                            Value="-45"
-                            TickFrequency="1"
-                            ValueChanged="NoiseGateThresholdSlider_ValueChanged" />
-                    <TextBlock x:Name="NoiseGateThresholdValueTextBlock"
+                    <CheckBox x:Name="HighBandArtifactReducerCheckBox"
+                              Grid.Row="9"
+                              Grid.ColumnSpan="2"
+                              VerticalAlignment="Center"
+                              Checked="HighBandArtifactReducerCheckBox_Checked"
+                              Unchecked="HighBandArtifactReducerCheckBox_Checked"
+                              Content="高域アーティファクト補正" />
+                    <TextBlock x:Name="HighBandArtifactReducerStateTextBlock"
                                Grid.Row="9"
                                Grid.Column="2"
                                HorizontalAlignment="Right"
@@ -293,16 +327,359 @@
                                Grid.ColumnSpan="2"
                                Margin="0,4,0,0"
                                Foreground="#4B5563"
-                               Text="どの小ささから無音扱いにするか決めます。" />
+                               Text="変換後だけ増えた 4-10 kHz を動的に抑えます。" />
+
+                    <TextBlock Grid.Row="12"
+                               VerticalAlignment="Center"
+                               Text="最大抑制" />
+                    <Slider x:Name="HighBandArtifactReducerMaxReductionSlider"
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Minimum="3"
+                            Maximum="12"
+                            Value="6"
+                            TickFrequency="0.5"
+                            ValueChanged="HighBandArtifactReducerMaxReductionSlider_ValueChanged" />
+                    <TextBlock x:Name="HighBandArtifactReducerMaxReductionValueTextBlock"
+                               Grid.Row="12"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="13"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="2-4 kHz は残し、耳につく高域だけを必要時に下げます。" />
+
+                    <CheckBox x:Name="PostPitchCorrectionEqCheckBox"
+                              Grid.Row="15"
+                              Grid.ColumnSpan="2"
+                              VerticalAlignment="Center"
+                              Checked="PostPitchCorrectionEqCheckBox_Checked"
+                              Unchecked="PostPitchCorrectionEqCheckBox_Checked"
+                              Content="内部補正 EQ" />
+                    <TextBlock x:Name="PostPitchCorrectionEqStateTextBlock"
+                               Grid.Row="15"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="16"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="ピッチ変更後の耳につく帯域を、ユーザーEQとは別に軽く整えます。" />
+
+                    <TextBlock Grid.Row="18"
+                               VerticalAlignment="Center"
+                               Text="補正強度" />
+                    <Slider x:Name="PostPitchCorrectionEqStrengthSlider"
+                            Grid.Row="18"
+                            Grid.Column="1"
+                            Minimum="0"
+                            Maximum="100"
+                            Value="35"
+                            TickFrequency="5"
+                            ValueChanged="PostPitchCorrectionEqStrengthSlider_ValueChanged" />
+                    <TextBlock x:Name="PostPitchCorrectionEqStrengthValueTextBlock"
+                               Grid.Row="18"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="19"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="上げるほど金属感や高域のざらつきを少し強めに抑えます。" />
+
+                    <CheckBox x:Name="PostPitchDeEsserCheckBox"
+                              Grid.Row="21"
+                              Grid.ColumnSpan="2"
+                              VerticalAlignment="Center"
+                              Checked="PostPitchDeEsserCheckBox_Checked"
+                              Unchecked="PostPitchDeEsserCheckBox_Checked"
+                              Content="内部 De-esser" />
+                    <TextBlock x:Name="PostPitchDeEsserStateTextBlock"
+                               Grid.Row="21"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="22"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="高域が強く出た時だけ、4-10 kHz を一時的に抑えます。" />
+
+                    <TextBlock Grid.Row="24"
+                               VerticalAlignment="Center"
+                               Text="最大抑制" />
+                    <Slider x:Name="PostPitchDeEsserMaxReductionSlider"
+                            Grid.Row="24"
+                            Grid.Column="1"
+                            Minimum="3"
+                            Maximum="9"
+                            Value="6"
+                            TickFrequency="0.5"
+                            ValueChanged="PostPitchDeEsserMaxReductionSlider_ValueChanged" />
+                    <TextBlock x:Name="PostPitchDeEsserMaxReductionValueTextBlock"
+                               Grid.Row="24"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="25"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="強くしすぎると明るさも引くので、まずは控えめ推奨です。" />
+
+                    <CheckBox x:Name="PostPitchSmoothingCompressorCheckBox"
+                              Grid.Row="27"
+                              Grid.ColumnSpan="2"
+                              VerticalAlignment="Center"
+                              Checked="PostPitchSmoothingCompressorCheckBox_Checked"
+                              Unchecked="PostPitchSmoothingCompressorCheckBox_Checked"
+                              Content="内部スムージング" />
+                    <TextBlock x:Name="PostPitchSmoothingCompressorStateTextBlock"
+                               Grid.Row="27"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="28"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="ピッチ変更後の細かな音量揺れを、軽く整えます。" />
+
+                    <TextBlock Grid.Row="30"
+                               VerticalAlignment="Center"
+                               Text="平滑化強度" />
+                    <Slider x:Name="PostPitchSmoothingCompressorStrengthSlider"
+                            Grid.Row="30"
+                            Grid.Column="1"
+                            Minimum="0"
+                            Maximum="100"
+                            Value="35"
+                            TickFrequency="5"
+                            ValueChanged="PostPitchSmoothingCompressorStrengthSlider_ValueChanged" />
+                    <TextBlock x:Name="PostPitchSmoothingCompressorStrengthValueTextBlock"
+                               Grid.Row="30"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="31"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="強くしすぎると抑揚が減るので、補助的に使います。" />
+
+                    <TextBlock Grid.Row="33"
+                               VerticalAlignment="Center"
+                               Text="Output Gain" />
+                    <Slider x:Name="OutputGainSlider"
+                            Grid.Row="33"
+                            Grid.Column="1"
+                            Minimum="-24"
+                            Maximum="12"
+                            TickFrequency="1"
+                            ValueChanged="OutputGainSlider_ValueChanged" />
+                    <TextBlock x:Name="OutputGainValueTextBlock"
+                               Grid.Row="33"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="34"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="2"
+                               Margin="0,4,0,0"
+                               Foreground="#4B5563"
+                               Text="最終的な出力音量を調整します。" />
                 </Grid>
-            </StackPanel>
+            </TabItem>
 
-            <StackPanel Grid.Column="2">
-                <TextBlock FontSize="16"
-                           FontWeight="SemiBold"
-                           Text="EQ" />
+            <TabItem Header="ダイナミクス">
+                <Grid Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Grid Margin="0,16,0,0">
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="16" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="128" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="64" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox x:Name="NoiseGateCheckBox"
+                                  Grid.Row="0"
+                                  Grid.ColumnSpan="2"
+                                  VerticalAlignment="Center"
+                                  Checked="NoiseGateCheckBox_Checked"
+                                  Unchecked="NoiseGateCheckBox_Checked"
+                                  Content="Noise Gate" />
+                        <TextBlock x:Name="NoiseGateStateTextBlock"
+                                   Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="小さな環境音を抑えます。" />
+
+                        <TextBlock Grid.Row="3"
+                                   VerticalAlignment="Center"
+                                   Text="Gate Threshold" />
+                        <Slider x:Name="NoiseGateThresholdSlider"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Minimum="-80"
+                                Maximum="-20"
+                                Value="-45"
+                                TickFrequency="1"
+                                ValueChanged="NoiseGateThresholdSlider_ValueChanged" />
+                        <TextBlock x:Name="NoiseGateThresholdValueTextBlock"
+                                   Grid.Row="3"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="どの小ささから無音扱いにするか決めます。" />
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="16" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="16" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="16" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="128" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="64" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox x:Name="CompressorCheckBox"
+                                  Grid.Row="0"
+                                  Grid.ColumnSpan="2"
+                                  VerticalAlignment="Center"
+                                  Checked="CompressorCheckBox_Checked"
+                                  Unchecked="CompressorCheckBox_Checked"
+                                  Content="Compressor" />
+                        <TextBlock x:Name="CompressorStateTextBlock"
+                                   Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="大きい音をならして扱いやすくします。" />
+
+                        <TextBlock Grid.Row="3"
+                                   VerticalAlignment="Center"
+                                   Text="Threshold" />
+                        <Slider x:Name="CompressorThresholdSlider"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Minimum="-60"
+                                Maximum="0"
+                                Value="-18"
+                                TickFrequency="1"
+                                ValueChanged="CompressorThresholdSlider_ValueChanged" />
+                        <TextBlock x:Name="CompressorThresholdValueTextBlock"
+                                   Grid.Row="3"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="圧縮を始める音量です。" />
+
+                        <TextBlock Grid.Row="6"
+                                   VerticalAlignment="Center"
+                                   Text="Ratio" />
+                        <Slider x:Name="CompressorRatioSlider"
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Minimum="1"
+                                Maximum="12"
+                                Value="3"
+                                TickFrequency="0.5"
+                                ValueChanged="CompressorRatioSlider_ValueChanged" />
+                        <TextBlock x:Name="CompressorRatioValueTextBlock"
+                                   Grid.Row="6"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="7"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="超えた音をどれだけ抑えるか決めます。" />
+
+                        <TextBlock Grid.Row="9"
+                                   VerticalAlignment="Center"
+                                   Text="Makeup Gain" />
+                        <Slider x:Name="CompressorMakeupGainSlider"
+                                Grid.Row="9"
+                                Grid.Column="1"
+                                Minimum="0"
+                                Maximum="18"
+                                Value="0"
+                                TickFrequency="1"
+                                ValueChanged="CompressorMakeupGainSlider_ValueChanged" />
+                        <TextBlock x:Name="CompressorMakeupGainValueTextBlock"
+                                   Grid.Row="9"
+                                   Grid.Column="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="10"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Foreground="#4B5563"
+                                   Text="圧縮後の音量を持ち上げます。" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="EQ">
+                <Grid Margin="16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -320,7 +697,6 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Grid.Column="0"
                                VerticalAlignment="Center"
                                Text="Low" />
                     <Slider x:Name="EqLowSlider"
@@ -343,7 +719,6 @@
                                Text="低音の厚みを調整します。" />
 
                     <TextBlock Grid.Row="3"
-                               Grid.Column="0"
                                VerticalAlignment="Center"
                                Text="Mid" />
                     <Slider x:Name="EqMidSlider"
@@ -366,7 +741,6 @@
                                Text="声の中心帯域を調整します。" />
 
                     <TextBlock Grid.Row="6"
-                               Grid.Column="0"
                                VerticalAlignment="Center"
                                Text="High" />
                     <Slider x:Name="EqHighSlider"
@@ -388,8 +762,64 @@
                                Foreground="#4B5563"
                                Text="明るさや抜け感を調整します。" />
                 </Grid>
-            </StackPanel>
-        </Grid>
+            </TabItem>
+
+            <TabItem Header="プリセット">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center"
+                               Text="プリセット名" />
+                    <TextBox x:Name="PresetNameTextBox"
+                             Grid.Column="1"
+                             Height="32" />
+
+                    <TextBlock Grid.Row="2"
+                               VerticalAlignment="Center"
+                               Text="保存済み" />
+                    <ComboBox x:Name="PresetComboBox"
+                              Grid.Row="2"
+                              Grid.Column="1"
+                              Height="32"
+                              DisplayMemberPath="Name"
+                              SelectionChanged="PresetComboBox_SelectionChanged" />
+
+                    <StackPanel Grid.Row="4"
+                                Grid.Column="1"
+                                Orientation="Horizontal">
+                        <Button Width="96"
+                                Height="32"
+                                Click="SavePresetButton_Click"
+                                Content="保存" />
+                        <Button Width="96"
+                                Height="32"
+                                Margin="8,0,0,0"
+                                Click="LoadPresetButton_Click"
+                                Content="読み込み" />
+                        <Button Width="96"
+                                Height="32"
+                                Margin="8,0,0,0"
+                                Click="DeletePresetButton_Click"
+                                Content="削除" />
+                        <Button Width="96"
+                                Height="32"
+                                Margin="8,0,0,0"
+                                Click="ResetPresetButton_Click"
+                                Content="初期化" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
         <Border Grid.Row="12"
                 Padding="12"

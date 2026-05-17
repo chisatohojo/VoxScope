@@ -6,6 +6,12 @@ namespace VoxScope.Audio;
 
 public sealed class AudioEngine : IDisposable
 {
+    private static readonly AudioLatencyProfile DefaultLatencyProfile = new(
+        InternalBufferMilliseconds: 500,
+        CaptureBufferMilliseconds: 20,
+        CaptureBufferCount: 3,
+        PlaybackDesiredLatencyMilliseconds: 100,
+        PlaybackBufferCount: 3);
     private readonly DeviceManager _deviceManager;
     private WaveInEvent? _capture;
     private WaveOutEvent? _playback;
@@ -24,6 +30,26 @@ public sealed class AudioEngine : IDisposable
 
     public WaveFormat? CurrentWaveFormat { get; private set; }
 
+    public int EstimatedLatencyMilliseconds
+    {
+        get
+        {
+            var buffer = _buffer;
+            var waveFormat = CurrentWaveFormat;
+
+            if (buffer is null || waveFormat is null)
+            {
+                return 0;
+            }
+
+            var queuedMilliseconds = buffer.BufferedBytes * 1000d / waveFormat.AverageBytesPerSecond;
+            return (int)Math.Round(
+                DefaultLatencyProfile.CaptureBufferMilliseconds
+                + DefaultLatencyProfile.PlaybackDesiredLatencyMilliseconds
+                + queuedMilliseconds);
+        }
+    }
+
     public void Start(AudioDevice inputDevice, AudioDevice outputDevice)
     {
         if (IsRunning)
@@ -37,7 +63,7 @@ public sealed class AudioEngine : IDisposable
 
         var buffer = new BufferedWaveProvider(waveFormat)
         {
-            BufferDuration = TimeSpan.FromSeconds(2),
+            BufferDuration = TimeSpan.FromMilliseconds(DefaultLatencyProfile.InternalBufferMilliseconds),
             DiscardOnBufferOverflow = true,
             ReadFully = true,
         };
@@ -46,15 +72,15 @@ public sealed class AudioEngine : IDisposable
         {
             DeviceNumber = inputDevice.DeviceNumber,
             WaveFormat = waveFormat,
-            BufferMilliseconds = 20,
-            NumberOfBuffers = 3,
+            BufferMilliseconds = DefaultLatencyProfile.CaptureBufferMilliseconds,
+            NumberOfBuffers = DefaultLatencyProfile.CaptureBufferCount,
         };
 
         var playback = new WaveOutEvent
         {
             DeviceNumber = outputDevice.DeviceNumber,
-            DesiredLatency = 80,
-            NumberOfBuffers = 3,
+            DesiredLatency = DefaultLatencyProfile.PlaybackDesiredLatencyMilliseconds,
+            NumberOfBuffers = DefaultLatencyProfile.PlaybackBufferCount,
         };
 
         try
@@ -66,7 +92,7 @@ public sealed class AudioEngine : IDisposable
                 waveFormat.SampleRate,
                 waveFormat.Channels,
                 () => Effects.NoiseGate.IsOpen,
-                () => Effects.PitchShift.PitchFactor);
+                () => Effects.PitchShift.CurrentPitchFactor);
             playback.Init(analyzedOutput.ToWaveProvider16());
             playback.Play();
             capture.StartRecording();
@@ -128,4 +154,11 @@ public sealed class AudioEngine : IDisposable
         Analyzer.AddInputSamples(args.Buffer, args.BytesRecorded);
         _buffer?.AddSamples(args.Buffer, 0, args.BytesRecorded);
     }
+
+    private sealed record AudioLatencyProfile(
+        int InternalBufferMilliseconds,
+        int CaptureBufferMilliseconds,
+        int CaptureBufferCount,
+        int PlaybackDesiredLatencyMilliseconds,
+        int PlaybackBufferCount);
 }

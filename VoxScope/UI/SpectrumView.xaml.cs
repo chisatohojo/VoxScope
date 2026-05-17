@@ -9,7 +9,7 @@ namespace VoxScope.UI;
 public partial class SpectrumView : UserControl
 {
     private const double MinimumFrequencyHz = 20d;
-    private const double MaximumFrequencyHz = 4000d;
+    private const double MaximumFrequencyHz = 20000d;
     private const double MinimumDb = -96d;
     private const double MaximumDb = 0d;
     private const double LeftMargin = 56d;
@@ -18,7 +18,19 @@ public partial class SpectrumView : UserControl
     private const double BottomMargin = 34d;
 
     private static readonly double[] MajorDbTicks = [-96d, -72d, -48d, -24d, 0d];
-    private static readonly double[] MajorFrequencyTicks = [20d, 50d, 100d, 200d, 500d, 1000d, 2000d, 4000d];
+    private static readonly double[] MajorFrequencyTicks =
+    [
+        20d,
+        50d,
+        100d,
+        200d,
+        500d,
+        1000d,
+        2000d,
+        5000d,
+        10000d,
+        20000d,
+    ];
     private static readonly Color InputSpectrumColor = Color.FromRgb(59, 130, 246);
     private static readonly Color InputPitchColor = Color.FromRgb(29, 78, 216);
     private static readonly Color OutputSpectrumColor = Color.FromRgb(249, 115, 22);

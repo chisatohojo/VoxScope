@@ -20,8 +20,21 @@ dotnet run --project .\VoxScope\VoxScope.csproj
 ## 配布ビルド
 
 ```powershell
-dotnet publish .\VoxScope\VoxScope.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+dotnet publish .\VoxScope\VoxScope.csproj /p:PublishProfile=win-x64
 ```
+
+出力先は `VoxScope\bin\Release\net8.0-windows\win-x64\publish\` です。
+
+同じ内容の補助スクリプトも `scripts\publish-win-x64.ps1` に置いています。実行ポリシーで止まる環境では、上の `dotnet publish` コマンドを使うのが確実です。
+
+## 設定保存
+
+- 通常設定: `%APPDATA%\VoxScope\settings.json`
+- プリセット: `%APPDATA%\VoxScope\presets.json`
+
+## 仮想マイク
+
+仮想マイク対応はまだ実装していません。設計メモは `docs\virtual-mic-integration.md` にまとめています。
 
 ## 初期構成
 
