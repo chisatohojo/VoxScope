@@ -1,0 +1,18 @@
+VoxScope Third-Party Notices
+
+The project currently references the following third-party packages:
+
+1. NAudio 2.3.0
+   License: MIT
+   Related packages restored by NAudio:
+   - NAudio.Asio 2.3.0
+   - NAudio.Core 2.3.0
+   - NAudio.Midi 2.3.0
+   - NAudio.Wasapi 2.3.0
+   - NAudio.WinForms 2.3.0
+   - NAudio.WinMM 2.3.0
+
+2. MathNet.Numerics 5.0.0
+   License: MIT
+
+Before distribution, keep this file updated whenever dependencies change and include any additional license texts required by newly added packages.

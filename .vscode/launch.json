@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run VoxScope",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/VoxScope/bin/Debug/net8.0-windows/VoxScope.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/VoxScope",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    }
+  ]
+}
